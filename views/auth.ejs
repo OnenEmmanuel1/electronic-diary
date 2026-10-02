@@ -1,0 +1,13 @@
+<% if(mode==='login'){ %>
+<section class="ediary-auth-card">
+  <p class="ediary-eyebrow">WELCOME BACK</p><h1>Your diary, in order.</h1><p>Sign in to pick up where you left off.</p>
+  <form method="post" action="/login"><label>Email address<input class="form-control" name="email" type="email" autocomplete="username" required></label><label>Password<input class="form-control" name="password" type="password" autocomplete="current-password" required></label><button class="btn btn-primary w-100">Sign in</button></form>
+  <p class="ediary-auth-card__foot">New to E-Diary? <a href="/register">Create an account</a></p>
+</section>
+<% }else{ %>
+<section class="ediary-auth-card">
+  <p class="ediary-eyebrow">MAKE ROOM FOR WHAT MATTERS</p><h1>A calmer way to keep track.</h1><p>Bring your plans, people, and to-dos together.</p>
+  <form method="post" action="/register"><label>Full name<input class="form-control" name="fullName" maxlength="100" autocomplete="name" required></label><label>Email address<input class="form-control" name="email" type="email" autocomplete="email" required></label><label>Password<input class="form-control" name="password" type="password" minlength="8" autocomplete="new-password" required><small class="ediary-auth-hint">Use at least 8 characters.</small></label><button class="btn btn-primary w-100">Create account</button></form>
+  <p class="ediary-auth-card__foot">Already registered? <a href="/login">Sign in</a></p>
+</section>
+<% } %>

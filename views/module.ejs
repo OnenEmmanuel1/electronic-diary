@@ -1,0 +1,26 @@
+<% const singular=title.endsWith('s')?title.slice(0,-1):title; %>
+<section class="ediary-page-heading">
+  <div><p class="ediary-eyebrow">YOUR PERSONAL SPACE</p><h1><%= title %></h1><p>Keep the details you need close at hand.</p></div>
+  <div class="ediary-heading-actions"><% if(table==='appointments'){ %><div class="ediary-calendar-tabs" aria-label="Calendar view"><% for(const view of ['day','week','month','year']){ %><a class="<%= (filters.view||'month')===view?'ediary-is-active':'' %>" href="/appointments?view=<%= view %>"><%= view[0].toUpperCase()+view.slice(1) %></a><% } %></div><% } %><a class="btn btn-primary" href="#new-record">+ Add <%= singular.toLowerCase() %></a></div>
+</section>
+<% if(table==='appointments'){ %><form class="ediary-date-filter mb-3" method="get"><input type="hidden" name="view" value="<%= filters.view||'month' %>"><label class="ediary-field-label" for="ediary-calendar-date">Jump to date</label><input class="form-control" id="ediary-calendar-date" type="date" name="date" value="<%= filters.from||'' %>"><button class="btn btn-outline-primary">Go</button></form><% } %>
+<section class="ediary-panel mb-4" id="new-record"><div class="ediary-panel__heading"><div><p class="ediary-eyebrow">ADD SOMETHING</p><h2>New <%= singular.toLowerCase() %></h2></div></div><%- include('partials/form-fields',{table,fields,contacts,record:null}) %></section>
+<section aria-label="<%= title %>"><div class="ediary-panel__heading"><div><p class="ediary-eyebrow">IN YOUR DIARY</p><h2><%= rows.length %> <%= rows.length===1?singular.toLowerCase():title.toLowerCase() %></h2></div></div>
+  <% if(rows.length){ %><div class="ediary-record-list">
+    <% rows.forEach(row=>{ const idField=table==='contacts'?'contactId':table==='appointments'?'appointmentId':table==='schedules'?'scheduleId':'taskId'; const primary=row.title||row.description||row.name; %>
+    <article class="ediary-record">
+      <div>
+        <div class="d-flex flex-wrap align-items-center gap-2"><h3 class="ediary-record__title"><%= primary %></h3><% if(table==='tasks'){ %><span class="badge <%= row.isCompleted?'text-bg-success':'text-bg-warning' %>"><%= row.isCompleted?'Complete':'Open' %></span><% } %></div>
+        <p class="ediary-record__meta"><% if(table==='appointments'){ %><%= row.appointmentDate %> � <%= row.appointmentTime.slice(0,5) %><% if(row.location){ %> � <%= row.location %><% } %><% }else if(table==='contacts'){ %><%= row.email||'No email' %><% if(row.phone){ %> � <%= row.phone %><% } %><% }else if(table==='schedules'){ %><%= row.scheduleDate %><% if(row.scheduleTime){ %> � <%= row.scheduleTime.slice(0,5) %><% } %><% if(row.objective){ %> � <%= row.objective %><% } %><% }else{ %><%= row.dueDate?'Due '+row.dueDate:'No due date' %><% } %></p>
+      </div>
+      <div class="ediary-record__actions">
+        <details class="ediary-entry-actions"><summary class="btn btn-sm btn-outline-secondary">Details</summary><div class="ediary-popover"><h2 class="mb-3"><%= primary %></h2><% fields.forEach(field=>{ %><p class="mb-2"><span class="ediary-field-label"><%= field.replace(/([A-Z])/g,' $1') %></span><br><% if(field==='contactId'){ %><%= contacts.find(contact=>contact.contactId===row[field])?.name||'�' %><% }else if(field==='isCompleted'){ %><%= row[field]?'Complete':'Open' %><% }else{ %><%= row[field]||'�' %><% } %></p><% }) %></div></details>
+        <details class="ediary-entry-actions"><summary class="btn btn-sm btn-outline-primary">Edit</summary><div class="ediary-popover"><%- include('partials/form-fields',{table,fields,contacts,record:row}) %></div></details>
+        <% if(table==='appointments'){ %><details class="ediary-entry-actions"><summary class="btn btn-sm btn-outline-secondary">Invite</summary><form method="post" action="/invitations" class="ediary-popover"><input type="hidden" name="appointmentId" value="<%= row[idField] %>"><label class="ediary-field-label" for="invite-<%= row[idField] %>">Invitee email</label><input class="form-control mb-2" id="invite-<%= row[idField] %>" type="email" name="email" required><button class="btn btn-primary">Send invitation</button></form></details><% } %>
+        <form method="post" action="/<%= table %>/<%= row[idField] %>/delete" onsubmit="return confirm('Delete this item?')"><button class="btn btn-sm btn-outline-danger">Delete</button></form>
+      </div>
+    </article>
+    <% }) %>
+  </div><% }else{ %><div class="ediary-panel ediary-empty">Nothing here yet. Add your first <%= singular.toLowerCase() %> above.</div><% } %>
+</section>
+

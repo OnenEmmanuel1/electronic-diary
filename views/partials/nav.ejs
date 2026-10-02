@@ -1,0 +1,24 @@
+<% if(user){ %>
+<aside class="ediary-sidebar">
+  <a class="ediary-brand" href="/home" aria-label="E-Diary home"><span class="ediary-brand__mark">e</span><span>E-Diary</span></a>
+  <div class="ediary-sidebar__label">MY SPACE</div>
+  <nav class="ediary-nav" aria-label="Main navigation">
+    <a class="ediary-nav__link <%= currentPath==='/home'?'ediary-is-active':'' %>" href="/home"><span class="ediary-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3.5 10 8.5-7 8.5 7v10.5h-6v-7h-5v7h-6z"/></svg></span><span>Overview</span></a>
+    <a class="ediary-nav__link <%= currentPath==='/appointments'?'ediary-is-active':'' %>" href="/appointments"><span class="ediary-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M7.5 3v4M16.5 3v4M4 9.5h16M8 13h3M8 16.5h3M14 13h2"/></svg></span><span>Appointments</span></a>
+    <a class="ediary-nav__link <%= currentPath==='/schedules'?'ediary-is-active':'' %>" href="/schedules"><span class="ediary-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg></span><span>Schedules</span></a>
+    <a class="ediary-nav__link <%= currentPath==='/tasks'?'ediary-is-active':'' %>" href="/tasks"><span class="ediary-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2.5"/><path d="m7.5 10 1.5 1.5 2.5-3M13.5 10h3M7.5 16l1.5 1.5 2.5-3M13.5 16h3M8 4V2.5M16 4V2.5"/></svg></span><span>Tasks</span></a>
+    <a class="ediary-nav__link <%= currentPath==='/contacts'?'ediary-is-active':'' %>" href="/contacts"><span class="ediary-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c.4-3.2 2.3-5 5.5-5s5.1 1.8 5.5 5M16 5.5a3 3 0 0 1 0 5.8M17 15.3c2.1.5 3.2 2 3.5 4.7"/></svg></span><span>Contacts</span></a>
+  </nav>
+  <div class="ediary-sidebar__label ediary-sidebar__label--secondary">SHARING</div>
+  <nav class="ediary-nav" aria-label="Shared diaries">
+    <a class="ediary-nav__link <%= currentPath==='/sharing' || currentPath.startsWith('/shared/')?'ediary-is-active':'' %>" href="/sharing"><span class="ediary-nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.3 10.8 7.4-3.6M8.3 13.2l7.4 3.6"/></svg></span><span>Shared diaries</span></a>
+  </nav>
+  <div class="ediary-sidebar__footer">
+    <div class="ediary-sidebar__user"><span class="ediary-avatar ediary-avatar--small"><%= user.fullName.split(' ').map(part=>part[0]).slice(0,2).join('').toUpperCase() %></span><span><strong><%= user.fullName %></strong><small><%= user.email %></small></span></div>
+    <form method="post" action="/logout"><button class="ediary-signout" type="submit">Sign out</button></form>
+  </div>
+</aside>
+<% }else{ %>
+<header class="ediary-guest-header"><a class="ediary-brand" href="/login"><span class="ediary-brand__mark">e</span><span>E-Diary</span></a></header>
+<% } %>
+

@@ -1,0 +1,110 @@
+<% title = 'Overview'; %>
+
+<section class="ediary-page-heading">
+  <div>
+    <p class="ediary-eyebrow">A LITTLE MORE ORGANIZED</p>
+    <h1>Hello, <%= user.fullName.split(' ')[0] %></h1>
+    <p>Your plans, all in one place.</p>
+  </div>
+  <div class="ediary-heading-actions">
+    <a class="btn btn-outline-primary" href="/appointments?view=day">Today's schedule</a>
+    <a class="btn btn-primary" href="/appointments">+ New appointment</a>
+  </div>
+</section>
+
+<section class="row g-3 mb-4" aria-label="Diary totals">
+  <% for (const [key, label, caption] of [
+    ['appointments', 'Appointments', 'In your diary'],
+    ['contacts', 'Contacts', 'People you know'],
+    ['schedules', 'Schedules', 'Plans to keep'],
+    ['tasks', 'Tasks', 'Things to do']
+  ]) { %>
+    <div class="col-6 col-xl-3">
+      <a class="ediary-stat-card" href="/<%= key %>">
+        <span><%= label %></span>
+        <strong><%= counts[key] %></strong>
+        <small><%= caption %></small>
+      </a>
+    </div>
+  <% } %>
+</section>
+
+<div class="row g-4">
+  <section class="col-xl-8">
+    <div class="ediary-panel h-100">
+      <div class="ediary-panel__heading">
+        <div>
+          <p class="ediary-eyebrow">COMING UP</p>
+          <h2>Your next appointments</h2>
+        </div>
+        <a class="btn btn-sm btn-outline-primary" href="/appointments">Open calendar</a>
+      </div>
+      <% if (upcoming.length) { %>
+        <div class="ediary-agenda">
+          <% upcoming.forEach((item) => { %>
+            <article class="ediary-agenda__row">
+              <time class="ediary-agenda__time"><%= item.appointmentTime.slice(0, 5) %></time>
+              <div>
+                <h3 class="ediary-agenda__title"><%= item.title %></h3>
+                <div class="ediary-agenda__meta">
+                  <%= new Date(item.appointmentDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) %>
+                  <% if (item.location) { %> · <%= item.location %><% } %>
+                </div>
+              </div>
+              <a class="ediary-agenda__action" href="/appointments" aria-label="Open appointments">&rarr;</a>
+            </article>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="ediary-empty">No appointments coming up. Add one to your diary when you're ready.</div>
+      <% } %>
+    </div>
+  </section>
+
+  <section class="col-xl-4">
+    <div class="ediary-panel mb-4">
+      <div class="ediary-panel__heading">
+        <div>
+          <p class="ediary-eyebrow">TO DO</p>
+          <h2>Tasks to remember</h2>
+        </div>
+        <a class="btn btn-sm btn-outline-primary" href="/tasks">All tasks</a>
+      </div>
+      <% if (tasks.length) { %>
+        <% tasks.forEach((task) => { %>
+          <div class="ediary-notification">
+            <span class="ediary-dot" style="background:var(--ediary-success)"></span>
+            <div>
+              <a href="/tasks"><%= task.title %></a>
+              <small><%= task.dueDate ? 'Due ' + new Date(task.dueDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No due date' %></small>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p class="ediary-empty">No open tasks. Enjoy the breathing room.</p>
+      <% } %>
+    </div>
+
+    <div class="ediary-panel">
+      <div class="ediary-panel__heading">
+        <div>
+          <p class="ediary-eyebrow">UPDATES</p>
+          <h2>Recent notifications</h2>
+        </div>
+      </div>
+      <% if (notifications.length) { %>
+        <% notifications.forEach((notification) => { %>
+          <div class="ediary-notification">
+            <span class="ediary-dot"></span>
+            <div>
+              <a href="<%= notification.link || '#' %>"><%= notification.message %></a>
+              <small><%= notification.createdAt %></small>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p class="ediary-empty">You're all caught up.</p>
+      <% } %>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,19 @@
+<% const recordId=record?(record.contactId||record.appointmentId||record.scheduleId||record.taskId):'new'; const labels={name:'Name',email:'Email address',phone:'Phone number',notes:'Notes',title:'Title',contactId:'Related contact',appointmentDate:'Date',appointmentTime:'Time',location:'Location',description:'Description',objective:'Objective',scheduleDate:'Date',scheduleTime:'Time',dueDate:'Due date',isCompleted:'Mark as completed'}; %>
+<form method="post" action="/<%= table %>" class="row g-3">
+  <% if(record){ %><input type="hidden" name="id" value="<%= recordId %>"><% } %>
+  <% fields.forEach(field=>{ const id=`${table}-${recordId}-${field}`; const value=record?record[field]:''; const inputType=field.toLowerCase().includes('date')?'date':field.toLowerCase().includes('time')?'time':field==='email'?'email':field==='phone'?'tel':'text'; %>
+    <div class="col-md-<%= ['notes','objective'].includes(field)?12:['title','description','name'].includes(field)?6:4 %>">
+      <label class="ediary-field-label" for="<%= id %>"><%= labels[field]||field %><% if(['name','title','description','appointmentDate','appointmentTime','scheduleDate'].includes(field)){ %> <span class="text-danger">*</span><% } %></label>
+      <% if(field==='contactId'){ %>
+        <select class="form-select" id="<%= id %>" name="contactId"><option value="">No contact</option><% contacts.forEach(contact=>{ %><option value="<%= contact.contactId %>" <%= value===contact.contactId?'selected':'' %>><%= contact.name %></option><% }) %></select>
+      <% }else if(['notes','objective'].includes(field)){ %>
+        <textarea class="form-control" id="<%= id %>" name="<%= field %>" rows="3"><%= value||'' %></textarea>
+      <% }else if(field==='isCompleted'){ %>
+        <div class="form-check ediary-completion"><input class="form-check-input" id="<%= id %>" name="isCompleted" type="checkbox" value="1" <%= value?'checked':'' %>><label class="form-check-label" for="<%= id %>">Completed</label></div>
+      <% }else{ %>
+        <input class="form-control" id="<%= id %>" name="<%= field %>" type="<%= inputType %>" value="<%= value||'' %>" <%= ['name','title','description','appointmentDate','appointmentTime','scheduleDate'].includes(field)?'required':'' %> maxlength="255">
+      <% } %>
+    </div>
+  <% }) %>
+  <div class="col-12"><button class="btn btn-primary"><%= record?'Save changes':'Add to diary' %></button></div>
+</form>

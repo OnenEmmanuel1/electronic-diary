@@ -1,0 +1,82 @@
+<% title='Shared diaries' %>
+  <section class="ediary-page-heading">
+    <div>
+      <p class="ediary-eyebrow">COLLABORATION</p>
+      <h1>Shared diaries</h1>
+      <p>Share the right amount of detail with someone you trust.</p>
+    </div>
+  </section>
+  <div class="row g-4">
+    <div class="col-xl-7">
+      <section class="ediary-panel mb-4">
+        <div class="ediary-panel__heading">
+          <div>
+            <p class="ediary-eyebrow">INVITE A DELEGATE</p>
+            <h2>Grant diary access</h2>
+          </div>
+        </div>
+        <form method="post" action="/sharing" class="row g-3 align-items-end">
+          <div class="col-md-5"><label class="ediary-field-label" for="delegate-email">Registered user�s
+              email</label><input class="form-control" id="delegate-email" name="email" type="email" required></div>
+          <div class="col-md-4"><label class="ediary-field-label" for="delegate-level">Access level</label><select
+              id="delegate-level" name="permissionLevel" class="form-select">
+              <option value="FreeBusyOnly">Free / Busy only</option>
+              <option value="FullDetails">Full details</option>
+            </select></div>
+          <div class="col-md-3"><button class="btn btn-primary w-100">Save access</button></div>
+        </form>
+      </section>
+      <section class="ediary-panel">
+        <div class="ediary-panel__heading">
+          <div>
+            <p class="ediary-eyebrow">YOUR DELEGATES</p>
+            <h2>People with access</h2>
+          </div>
+        </div>
+        <% access.forEach(a=>{ %><div class="ediary-shared-row"><span><strong>
+                <%= a.fullName %>
+              </strong><small>
+                <%= a.email %> � <%= a.permissionLevel==='FreeBusyOnly' ?'Free / Busy only':'Full details' %>
+              </small></span></div>
+          <% }) %>
+            <% if(!access.length){ %>
+              <p class="ediary-empty">You haven�t shared your diary yet.</p>
+              <% } %>
+      </section>
+    </div>
+    <div class="col-xl-5">
+      <section class="ediary-panel mb-4">
+        <div class="ediary-panel__heading">
+          <div>
+            <p class="ediary-eyebrow">REMINDERS</p>
+            <h2>When should we remind you?</h2>
+          </div>
+        </div>
+        <form method="post" action="/settings/reminders" class="d-flex align-items-end gap-2">
+          <div class="flex-grow-1"><label class="ediary-field-label" for="lead-minutes">Minutes before an
+              appointment</label><input class="form-control" id="lead-minutes" type="number" name="leadMinutes" min="0"
+              max="10080" value="<%= leadMinutes %>" required></div><button
+            class="btn btn-outline-primary">Save</button>
+        </form>
+        <p class="small text-secondary mt-2 mb-0">Tasks use this lead time before their due date begins.</p>
+      </section>
+      <section class="ediary-panel">
+        <div class="ediary-panel__heading">
+          <div>
+            <p class="ediary-eyebrow">SHARED WITH YOU</p>
+            <h2>Other diaries</h2>
+          </div>
+        </div>
+        <% owners.forEach(o=>{ %><div class="ediary-shared-row"><span><strong>
+                <%= o.fullName %>
+              </strong><small>
+                <%= o.permissionLevel==='FreeBusyOnly' ?'Free / Busy only':'Full details' %>
+              </small></span><a class="btn btn-sm btn-outline-primary" href="/shared/<%= o.ownerUserId %>">View
+              diary</a></div>
+          <% }) %>
+            <% if(!owners.length){ %>
+              <p class="ediary-empty">No one has shared a diary with you yet.</p>
+              <% } %>
+      </section>
+    </div>
+  </div>
